@@ -47,9 +47,6 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
         });
-
-        # restrict the parameter 'amount' to only numbers and positive.
-        Route::pattern('amount', '[1-9]+');
     }
 
     /**
