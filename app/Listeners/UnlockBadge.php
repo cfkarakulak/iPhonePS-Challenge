@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
-use App\Events\AchievementUnlocked;
+use App\Events\BadgeUnlocked;
 
-class UnlockAchievement
+class UnlockBadge
 {
     /**
      * Create the event listener.
@@ -19,11 +19,11 @@ class UnlockAchievement
     /**
      * Handle the event.
      *
-     * @param  \App\Events\AchievementUnlocked  $event
+     * @param  \App\Events\BadgeUnlocked  $event
      * @return void
      */
-    public function handle(AchievementUnlocked $event)
+    public function handle(BadgeUnlocked $event)
     {
-        return info('A new achievement is unlocked: ' . $event->achievement_name);
+        return info('A new badge is unlocked: ' . $event->badge_name);
     }
 }

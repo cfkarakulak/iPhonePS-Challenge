@@ -26,15 +26,30 @@ return [
             1 => 'First Comment Written',
             3 => '3 Comments Written',
             5 => '5 Comments Written',
-            10 => '10 Comment Written',
-            20 => '20 Comment Written',
+            10 => '10 Comments Written',
+            20 => '20 Comments Written',
         ],
     ],
 
     'badges' => [
-        'beginner' => '0 Achievements',
-        'intermediate' => '4 Achievements',
-        'advanced' => '8 Achievements',
-        'master' => '10 Achievements',
+        0 => [
+            'key' => 'beginner',
+            'title' => '0 Achievement',
+        ],
+
+        4 => [
+            'key' => 'intermediate',
+            'title' => '4 Achievements',
+        ],
+
+        8 => [
+            'key' => 'advanced',
+            'title' => '8 Achievements',
+        ],
+
+        10 => [
+            'key' => 'master',
+            'title' => '10 Achievements',
+        ],
     ],
 ];

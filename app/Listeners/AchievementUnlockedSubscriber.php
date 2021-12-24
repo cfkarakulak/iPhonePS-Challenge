@@ -2,9 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\CommentWritten;
-use App\Events\LessonWatched;
-use App\Events\AchievementUnlocked;
+use App\Events\{
+    CommentWritten,
+    LessonWatched,
+    AchievementUnlocked,
+    BadgeUnlocked
+};
+use App\Services\EarningService;
 
 class AchievementUnlockedSubscriber
 {
@@ -16,16 +20,40 @@ class AchievementUnlockedSubscriber
      */
     public function commentWritten(CommentWritten $event)
     {
+        $earnings = new EarningService(
+            writtenCommentCount: $event->comment->user->comments->count(),
+            watchedLessonCount: $event->comment->user->watched->count(),
+        );
+
         # exact match means a new achievement should be unlocked
-        if ($achievement = collect(config('ranking.achievements.comments'))->get(
-            $event->comment->user->comments->count()
+        if ($achievement = $earnings->ranks->get('comment')->get(
+            $earnings->stats->pick('comment.count')
         )) {
-            return event(
-                new AchievementUnlocked(
-                    $achievement,
-                    $event->comment->user,
-                )
+            # calculate comment written earnings
+            $earnings->stats->get('comment')->put('earnings', $earnings->getCommentAchievements(
+                count: $earnings->stats->pick('comment.count')
+            ));
+
+            # calculate lesson watched earnings
+            $earnings->stats->get('lesson')->put('earnings', $earnings->getLessonAchievements(
+                count: $earnings->stats->pick('lesson.count')
+            ));
+
+            # emit achievement unlocked event
+            AchievementUnlocked::dispatch(
+                $achievement,
+                $event->comment->user
             );
+
+            # check to see if a new badge is unlocked
+            if ($badge = $earnings->badges->get(
+                $earnings->getCumulative()
+            )) {
+                BadgeUnlocked::dispatch(
+                    $badge['title'],
+                    $event->comment->user
+                );
+            }
         }
     }
 
@@ -37,16 +65,40 @@ class AchievementUnlockedSubscriber
      */
     public function lessonWatched(LessonWatched $event)
     {
+        $earnings = new EarningService(
+            writtenCommentCount: $event->user->comments->count(),
+            watchedLessonCount: $event->user->watched->count(),
+        );
+
         # exact match means a new achievement should be unlocked
-        if ($achievement = collect(config('ranking.achievements.lessons'))->get(
-            $event->user->lessons->count()
+        if ($achievement = $earnings->ranks->get('lesson')->get(
+            $earnings->stats->pick('lesson.count')
         )) {
-            return event(
-                new AchievementUnlocked(
-                    $achievement,
-                    $event->user,
-                )
+            # calculate comment written earnings
+            $earnings->stats->get('comment')->put('earnings', $earnings->getCommentAchievements(
+                count: $earnings->stats->pick('comment.count')
+            ));
+
+            # calculate lesson watched earnings
+            $earnings->stats->get('lesson')->put('earnings', $earnings->getLessonAchievements(
+                count: $earnings->stats->pick('lesson.count')
+            ));
+
+            # emit achievement unlocked event
+            AchievementUnlocked::dispatch(
+                $achievement,
+                $event->user
             );
+
+            # check to see if a new badge is unlocked
+            if ($badge = $earnings->badges->get(
+                $earnings->getCumulative()
+            )) {
+                BadgeUnlocked::dispatch(
+                    $badge['title'],
+                    $event->user
+                );
+            }
         }
     }
 
