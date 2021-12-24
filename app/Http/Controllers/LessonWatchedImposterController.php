@@ -8,22 +8,17 @@ use App\Events\LessonWatched;
 
 class LessonWatchedImposterController extends Controller
 {
-    public function store(User $user) #, int $amount
+    public function store(User $user)
     {
-        /*
-        | Please Read:
-        | For convenience I first made it possible to create multiple lessons watched
-        | with a parameter from route/web.php - lesson/{amount} (lessons watched as many as amount)
-        | then I realized that I had to keep track of the latest achievement as generating many
-        | lessons watched could break the "exact match" condition (see AchievementUnlockedSubscriber)
-        | and there is no way to not satisfy that equity if lessons watched are created one-by-one
-        | so I'm just leaving this seeder here on purpose to support multiple lesson watched creating ability.
-        */
-
-        # generate as many lessons watched as $amount (1)
+        # generate placeholder lessons
         $lessons = Lesson::factory()->count(1)->create()->each(
             function ($lesson) use ($user) {
-                LessonWatched::dispatch($lesson, $user);
+                # assume the lesson is watched
+                $user->lessons()->attach($lesson->id, ['watched' => 1]);
+
+                return event(
+                    new LessonWatched($lesson, $user)
+                );
             }
         );
     }
