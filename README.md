@@ -11,3 +11,7 @@ CommentWrittenImposterController is used to make comments on behalf of a user
 
 LessonWatchedImposterController is used to create a lesson and then mark it as watched
 `POST: /users/{id}/watch`  
+
+
+https://user-images.githubusercontent.com/15141224/147383024-0c804a97-57c6-47eb-86a7-2ff62c894120.mp4
+
