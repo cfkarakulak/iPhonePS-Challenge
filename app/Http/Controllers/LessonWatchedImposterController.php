@@ -21,5 +21,10 @@ class LessonWatchedImposterController extends Controller
                 );
             }
         );
+
+        return response()->json([
+            'success' => true,
+            'count' => $user->lessons->count(),
+        ], 201);
     }
 }

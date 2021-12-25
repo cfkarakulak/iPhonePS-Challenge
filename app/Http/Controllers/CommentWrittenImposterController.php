@@ -18,5 +18,10 @@ class CommentWrittenImposterController extends Controller
                 new CommentWritten($comment)
             );
         });
+
+        return response()->json([
+            'success' => true,
+            'count' => $user->comments->count(),
+        ], 201);
     }
 }

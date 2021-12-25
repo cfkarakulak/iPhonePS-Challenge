@@ -53,7 +53,7 @@ class AchievementsController extends Controller
             ),
             'current_badge' => $earnings->getBadgeName($currentlyOwnedBadge),
             'next_badge' => $nextEarnedBadge ? $earnings->getBadgeName($nextEarnedBadge) : null,
-            'remaing_to_unlock_next_badge' => $nextEarnedBadge ? $nextEarnedBadge - $earnings->getCumulative() : 0,
+            'remaining_to_unlock_next_badge' => $nextEarnedBadge ? $nextEarnedBadge - $earnings->getCumulative() : 0,
         ]);
     }
 }
